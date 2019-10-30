@@ -31,7 +31,9 @@ func SendBadRequestResponse(res http.ResponseWriter, responseBody interface{}) {
 }
 
 //SendUnauthorizedResponse sends a status 401 to the provided responseWriter
-func SendUnauthorizedResponse(res http.ResponseWriter, responseBody interface{}) {
+func SendUnauthorizedResponse(res http.ResponseWriter, message string) {
+	responseBody := make(map[string]interface{})
+	responseBody["message"] = message
 	res.WriteHeader(http.StatusUnauthorized)
 	json.NewEncoder(res).Encode(responseBody)
 }

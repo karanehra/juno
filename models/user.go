@@ -88,5 +88,8 @@ func (user *User) CreateAndSendResponse(res http.ResponseWriter) {
 
 //FindOne finds and returns a mongo doc
 func (user *User) FindOne(filter primitive.D) *mongo.SingleResult {
-
+	coll := database.DB.Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	return coll.FindOne(ctx, filter)
 }

@@ -1,16 +1,10 @@
 package controllers
 
 import (
-	"context"
 	"encoding/json"
-	"juno/database"
 	"juno/models"
 	"juno/util"
 	"net/http"
-	"time"
-
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 //CreateUser handles the user creation endpoint
@@ -33,19 +27,14 @@ func AuthenticateUser(res http.ResponseWriter, req *http.Request) {
 		util.SendBadRequestResponse(res, err)
 		return
 	}
-	coll := database.DB.Collection("users")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	filter := bson.D{primitive.E{Key: "email", Value: credentials.Email}}
-	err := coll.FindOne(ctx, filter).Decode(&user)
+	filter := util.CreateKeyValueFilter("email", credentials.Email)
+	err := user.FindOne(filter).Decode(&user)
 	if err != nil {
 		util.SendServerErrorResponse(res, err.Error())
 		return
 	}
 	if !user.IsPasswordCorrect(credentials.Password) {
-		resBody := make(map[string]interface{})
-		resBody["message"] = "Incorrect Credentials"
-		util.SendUnauthorizedResponse(res, resBody)
+		util.SendUnauthorizedResponse(res, "Incorrect Credentials")
 		return
 	}
 	user.Password = ""
