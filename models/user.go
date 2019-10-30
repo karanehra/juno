@@ -1,6 +1,16 @@
 package models
 
-import "crypto/sha1"
+import (
+	"context"
+	"crypto/sha1"
+	"juno/database"
+	"juno/util"
+	"net/http"
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+)
 
 //User defines the user mongoDB schema
 type User struct {
@@ -59,4 +69,24 @@ func (user *User) IsPasswordCorrect(password string) bool {
 		return true
 	}
 	return false
+}
+
+//CreateAndSendResponse adds a userInstance toDB and send appropriate response
+func (user *User) CreateAndSendResponse(res http.ResponseWriter) {
+	var userInstance User
+	userInstance.Password = util.CreateHashSHA(userInstance.Password)
+	coll := database.DB.Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	result, err := coll.InsertOne(ctx, userInstance)
+	if err != nil {
+		util.SendServerErrorResponse(res, err.Error())
+		return
+	}
+	util.SendSuccessCreatedResponse(res, result)
+}
+
+//FindOne finds and returns a mongo doc
+func (user *User) FindOne(filter primitive.D) *mongo.SingleResult {
+
 }

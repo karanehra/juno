@@ -21,16 +21,7 @@ func CreateUser(res http.ResponseWriter, req *http.Request) {
 		util.SendBadRequestResponse(res, err)
 		return
 	}
-	userInstance.Password = util.CreateHashSHA(userInstance.Password)
-	coll := database.DB.Collection("users")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	result, err := coll.InsertOne(ctx, userInstance)
-	if err != nil {
-		util.SendServerErrorResponse(res, err.Error())
-		return
-	}
-	util.SendSuccessCreatedResponse(res, result)
+	userInstance.CreateAndSendResponse(res)
 }
 
 //AuthenticateUser crosschecks user credentials
