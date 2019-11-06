@@ -18,7 +18,7 @@ import (
 //CreateBoard creates a board
 func CreateBoard(res http.ResponseWriter, req *http.Request) {
 	var board interfaces.Model = &models.Board{}
-	generics.CreateMethodGeneric(board, res, req)
+	generics.CreateMethodGenericHandler(board, res, req)
 }
 
 //GetUserBoards gets the boards created againt the provided userID

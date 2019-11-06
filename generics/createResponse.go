@@ -7,8 +7,8 @@ import (
 	"net/http"
 )
 
-//CreateMethodGeneric tries to implement a model agnostic CREATE method
-func CreateMethodGeneric(
+//CreateMethodGenericHandler implements a model agnostic CREATE method
+func CreateMethodGenericHandler(
 	model interfaces.Model,
 	res http.ResponseWriter,
 	req *http.Request) {
