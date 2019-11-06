@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"juno/database"
+	"juno/generics"
+	"juno/interfaces"
 	"juno/models"
 	"juno/util"
 	"net/http"
@@ -16,14 +17,8 @@ import (
 
 //CreateBoard creates a board
 func CreateBoard(res http.ResponseWriter, req *http.Request) {
-	var boardInstance models.Board
-	json.NewDecoder(req.Body).Decode(&boardInstance)
-	fmt.Println(boardInstance)
-	if err := boardInstance.Validate(); len(err) > 0 {
-		util.SendBadRequestResponse(res, err)
-		return
-	}
-	boardInstance.CreateAndSendResponse(res)
+	var board interfaces.Model = &models.Board{}
+	generics.CreateMethodGeneric(board, res, req)
 }
 
 //GetUserBoards gets the boards created againt the provided userID
