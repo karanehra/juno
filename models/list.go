@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"juno/database"
+	"juno/generics"
 	"juno/util"
 	"net/http"
 	"time"
@@ -17,17 +18,7 @@ type List struct {
 
 //Validate method crosschecks and validates the list values
 func (list *List) Validate() []string {
-	var errorData []string = []string{}
-	if list.Title == "" {
-		errorData = append(errorData, "title: field is required")
-	}
-	if list.BoardID == "" {
-		errorData = append(errorData, "boardid: field is required")
-	}
-	if list.UserID == "" {
-		errorData = append(errorData, "userid: field is required")
-	}
-	return errorData
+	return generics.GenericModelInstanceValidator(list)
 }
 
 //CreateAndSendResponse method creates a list in database from a
