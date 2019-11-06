@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha1"
 	"juno/database"
+	"juno/generics"
 	"juno/util"
 	"net/http"
 	"time"
@@ -29,23 +30,7 @@ type UserCredentials struct {
 
 //Validate ensures that user is in a correct format
 func (user *User) Validate() []string {
-	var errorData []string = []string{}
-	if user.FirstName == "" {
-		errorData = append(errorData, "user.firstname: field is required")
-	}
-	if user.LastName == "" {
-		errorData = append(errorData, "user.lastname: field is required")
-	}
-	if user.Email == "" {
-		errorData = append(errorData, "user.email: field is required")
-	}
-	if user.Password == "" {
-		errorData = append(errorData, "user.password: field is required")
-	}
-	if user.Role == "" {
-		errorData = append(errorData, "user.role: field is required")
-	}
-	return errorData
+	return generics.GenericModelInstanceValidator(user)
 }
 
 //Validate checks login request payload

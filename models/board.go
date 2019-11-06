@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"juno/database"
+	"juno/generics"
 	"juno/util"
 	"net/http"
 	"time"
@@ -20,15 +21,7 @@ type Board struct {
 
 //Validate crosschecks a board created from a request body
 func (board *Board) Validate() []string {
-	var errorData []string = []string{}
-	if board.Title == "" {
-		errorData = append(errorData, "title: field is required")
-	}
-	if board.UserID == "" {
-		errorData = append(errorData, "userId: field is required")
-	}
-
-	return errorData
+	return generics.GenericModelInstanceValidator(board)
 }
 
 //CreateAndSendResponse adds a userInstance to DB and sends appropriate response
