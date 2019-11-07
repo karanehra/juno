@@ -37,14 +37,13 @@ func (board *Board) CreateAndSendResponse(res http.ResponseWriter) {
 	util.SendSuccessCreatedResponse(res, result)
 }
 
-//GetByUserIDAndSendResponse finds a user boards and writes the to the ReponseWriter provided
-func (board *Board) GetByUserIDAndSendResponse(userID string, res http.ResponseWriter) {
+//GetByParentIDAndSendResponse finds a user boards and writes the to the ReponseWriter provided
+func (board *Board) GetByParentIDAndSendResponse(userID string, res http.ResponseWriter) {
 	collection := database.DB.Collection("boards")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	cur, err := collection.Find(ctx, util.CreateKeyValueFilter("userId", userID))
 	if err != nil {
-		fmt.Println("errored")
 		util.SendServerErrorResponse(res, err.Error())
 		return
 	}
@@ -58,7 +57,6 @@ func (board *Board) GetByUserIDAndSendResponse(userID string, res http.ResponseW
 			return
 		}
 		results = append(results, result)
-		fmt.Println("append")
 	}
 	fmt.Println(len(results))
 	util.SendSuccessReponse(res, results)

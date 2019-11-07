@@ -2,34 +2,13 @@ package controllers
 
 import (
 	"context"
-	"encoding/json"
 	"juno/database"
-	"juno/models"
 	"juno/util"
 	"net/http"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
-
-//CreateArticle adds an article to database
-func CreateArticle(res http.ResponseWriter, req *http.Request) {
-	var v models.Article
-	json.NewDecoder(req.Body).Decode(&v)
-	if err := v.Validate(); len(err) > 0 {
-		util.SendBadRequestResponse(res, err)
-		return
-	}
-	coll := database.DB.Collection("articles")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	result, err := coll.InsertOne(ctx, v)
-	if err != nil {
-		util.SendServerErrorResponse(res, err.Error())
-		return
-	}
-	util.SendSuccessCreatedResponse(res, result)
-}
 
 //GetOne is a test getter function
 func GetOne(res http.ResponseWriter, req *http.Request) {

@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
+	"juno/generics"
+	"juno/interfaces"
 	"juno/models"
 	"juno/util"
 	"net/http"
@@ -9,13 +11,8 @@ import (
 
 //CreateUser handles the user creation endpoint
 func CreateUser(res http.ResponseWriter, req *http.Request) {
-	var userInstance models.User
-	json.NewDecoder(req.Body).Decode(&userInstance)
-	if err := userInstance.Validate(); len(err) > 0 {
-		util.SendBadRequestResponse(res, err)
-		return
-	}
-	userInstance.CreateAndSendResponse(res)
+	var user interfaces.Model = &models.User{}
+	generics.CreateMethodGenericHandler(user, res, req)
 }
 
 //AuthenticateUser crosschecks user credentials
