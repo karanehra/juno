@@ -2,14 +2,11 @@ package models
 
 import (
 	"context"
-	"fmt"
 	"juno/database"
 	"juno/generics"
 	"juno/util"
 	"net/http"
 	"time"
-
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 //Board defines the schema of a user created task board
@@ -35,33 +32,4 @@ func (board *Board) CreateAndSendResponse(res http.ResponseWriter) {
 		return
 	}
 	util.SendSuccessCreatedResponse(res, result)
-}
-
-//GetByParentIDAndSendResponse finds a user boards and writes the to the ReponseWriter provided
-func (board *Board) GetByParentIDAndSendResponse(userID string, res http.ResponseWriter) {
-	collection := database.DB.Collection("boards")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	cur, err := collection.Find(ctx, util.CreateKeyValueFilter("userId", userID))
-	if err != nil {
-		util.SendServerErrorResponse(res, err.Error())
-		return
-	}
-	var results []bson.M
-	defer cur.Close(ctx)
-	for cur.Next(ctx) {
-		var result bson.M
-		err := cur.Decode(&result)
-		if err != nil {
-			util.SendServerErrorResponse(res, err.Error())
-			return
-		}
-		results = append(results, result)
-	}
-	fmt.Println(len(results))
-	util.SendSuccessReponse(res, results)
-	if err := cur.Err(); err != nil {
-		util.SendServerErrorResponse(res, err.Error())
-		return
-	}
 }

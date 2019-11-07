@@ -12,7 +12,7 @@ import (
 //Card type defines the schema for a card
 type Card struct {
 	Description string   `json:"description"`
-	BoardID     string   `json:"boardid"`
+	ListID      string   `json:"listid"`
 	MemberIDs   []string `json:"members"`
 }
 

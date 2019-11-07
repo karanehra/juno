@@ -24,7 +24,7 @@ func (list *List) Validate() []string {
 //CreateAndSendResponse method creates a list in database from a
 //validated list
 func (list *List) CreateAndSendResponse(res http.ResponseWriter) {
-	coll := database.DB.Collection("boards")
+	coll := database.DB.Collection("lists")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	result, err := coll.InsertOne(ctx, list)
