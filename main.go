@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	const PORT = 3000
+	const PORT = 3007
 	fmt.Printf("Server started on PORT:%d\n", PORT)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", PORT), router.SetupRouter()))
 }
