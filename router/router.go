@@ -21,5 +21,6 @@ func SetupRouter() *mux.Router {
 	MasterRouter.HandleFunc("/cards", controllers.CreateCard).Methods("POST")
 	MasterRouter.HandleFunc("/cards/{list}", controllers.CreateCard).Methods("GET")
 	MasterRouter.HandleFunc("/articles", controllers.GetArticles).Methods("GET")
+	MasterRouter.HandleFunc("/articles", controllers.PurgeArticles).Queries("page", "{page}", "size", "{size}").Methods("DELETE")
 	return MasterRouter
 }

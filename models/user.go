@@ -59,7 +59,7 @@ func (user *User) IsPasswordCorrect(password string) bool {
 //CreateAndSendResponse adds a userInstance to DB and send appropriate response
 func (user *User) CreateAndSendResponse(res http.ResponseWriter) {
 	var userInstance User
-	userInstance.Password = util.CreateHashSHA(userInstance.Password)
+	userInstance.Password = util.GetSHAToHex(userInstance.Password)
 	coll := database.DB.Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

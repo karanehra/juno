@@ -2,10 +2,11 @@ package controllers
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"juno/database"
+	"juno/util"
 	"net/http"
+	"strconv"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,14 +14,22 @@ import (
 
 //GetArticles fetches articles from db
 func GetArticles(res http.ResponseWriter, req *http.Request) {
+	fmt.Printf("Page: %v, size:%v\n", req.FormValue("page"), req.FormValue("size"))
+	size, _ := strconv.Atoi(req.FormValue("size"))
+	page, _ := strconv.Atoi(req.FormValue("page"))
+	results, err := database.GetPaginatedArticles(int32(size), int64(page))
+	if err != nil {
+		util.SendServerErrorResponse(res, err.Error())
+		return
+	}
+	util.SendSuccessReponse(res, results)
+}
+
+//PurgeArticles empties the article entries
+func PurgeArticles(res http.ResponseWriter, req *http.Request) {
 	coll := database.DB.Collection("articles")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	results, err := coll.Find(ctx, bson.D{})
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(results)
-	res.WriteHeader(http.StatusCreated)
-	json.NewEncoder(res).Encode(results)
+	coll.DeleteMany(ctx, bson.D{})
+	util.SendSuccessReponse(res, map[string]string{})
 }
