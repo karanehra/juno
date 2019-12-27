@@ -20,7 +20,12 @@ func SetupRouter() *mux.Router {
 	MasterRouter.HandleFunc("/lists/{board}", controllers.GetListsInBoard).Methods("GET")
 	MasterRouter.HandleFunc("/cards", controllers.CreateCard).Methods("POST")
 	MasterRouter.HandleFunc("/cards/{list}", controllers.CreateCard).Methods("GET")
-	MasterRouter.HandleFunc("/articles", controllers.GetArticles).Methods("GET")
-	MasterRouter.HandleFunc("/articles", controllers.PurgeArticles).Queries("page", "{page}", "size", "{size}").Methods("DELETE")
+
+	MasterRouter.
+		HandleFunc("/articles", controllers.GetArticles).
+		Methods("GET").
+		Queries("page", "{page}", "size", "{size}", "query", "{query}")
+
+	MasterRouter.HandleFunc("/articles", controllers.PurgeArticles).Methods("DELETE")
 	return MasterRouter
 }

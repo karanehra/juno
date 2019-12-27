@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"juno/database"
 	"juno/util"
 	"net/http"
@@ -14,10 +13,10 @@ import (
 
 //GetArticles fetches articles from db
 func GetArticles(res http.ResponseWriter, req *http.Request) {
-	fmt.Printf("Page: %v, size:%v\n", req.FormValue("page"), req.FormValue("size"))
 	size, _ := strconv.Atoi(req.FormValue("size"))
 	page, _ := strconv.Atoi(req.FormValue("page"))
-	results, err := database.GetPaginatedArticles(int32(size), int64(page))
+	query := req.FormValue("query")
+	results, err := database.GetPaginatedArticles(int32(size), int64(page), query)
 	if err != nil {
 		util.SendServerErrorResponse(res, err.Error())
 		return

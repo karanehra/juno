@@ -36,28 +36,21 @@ func FindInCollectionByFilter(collection string, filter primitive.D) ([]bson.M, 
 }
 
 //GetPaginatedArticles is used to paginate article results
-func GetPaginatedArticles(pageSize int32, pageNo int64) ([]bson.M, error) {
+func GetPaginatedArticles(pageSize int32, pageNo int64, query string) ([]bson.M, error) {
 	coll := DB.Collection("articles")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	skip := ((pageNo - 1) * int64(pageSize))
 	options := options.Find().SetLimit(int64(pageSize)).SetSkip(skip)
-	cur, err := coll.Find(ctx, bson.M{}, options)
+	filter := bson.D{bson.E{Key: "description", Value: bson.D{{"$regex", primitive.Regex{Pattern: query, Options: "i"}}}}}
+	cur, err := coll.Find(ctx, filter, options)
 	if err != nil {
 		return nil, err
 	}
 	var results []bson.M
-	defer cur.Close(ctx)
-	for cur.Next(ctx) {
-		var result bson.M
-		err := cur.Decode(&result)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, result)
-	}
-	if err := cur.Err(); err != nil {
-		return nil, err
+	cursorError := cur.All(context.TODO(), &results)
+	if cursorError != nil {
+		return nil, cursorError
 	}
 	return results, nil
 }
