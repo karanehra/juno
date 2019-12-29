@@ -39,7 +39,10 @@ func GetTags(res http.ResponseWriter, req *http.Request) {
 	tags, err := cache.CacheClient.Get("POSEIDON_ARTICLE_TAGS")
 	tagMap := tags.(map[string]interface{})
 	tagArray := []map[string]int{}
-	results := tagMap["value"].(map[string]interface{})
+	var results map[string]interface{}
+	if tagMap["value"] != nil {
+		results = tagMap["value"].(map[string]interface{})
+	}
 	for key, val := range results {
 		switch v := val.(type) {
 		case float64:
