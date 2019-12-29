@@ -26,6 +26,8 @@ func SetupRouter() *mux.Router {
 		Methods("GET").
 		Queries("page", "{page}", "size", "{size}", "query", "{query}")
 
+	MasterRouter.HandleFunc("/tags", controllers.GetTags).Methods("GET")
+
 	MasterRouter.HandleFunc("/articles", controllers.PurgeArticles).Methods("DELETE")
 	return MasterRouter
 }

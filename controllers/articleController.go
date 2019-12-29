@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"juno/cache"
 	"juno/database"
 	"juno/util"
 	"net/http"
@@ -31,4 +32,22 @@ func PurgeArticles(res http.ResponseWriter, req *http.Request) {
 	defer cancel()
 	coll.DeleteMany(ctx, bson.D{})
 	util.SendSuccessReponse(res, map[string]string{})
+}
+
+//GetTags fetches the tag data from cache
+func GetTags(res http.ResponseWriter, req *http.Request) {
+	tags, err := cache.CacheClient.Get("POSEIDON_ARTICLE_TAGS")
+	tagMap := tags.(map[string]interface{})
+	tagArray := []map[string]int{}
+	results := tagMap["value"].(map[string]interface{})
+	for key, val := range results {
+		switch v := val.(type) {
+		case float64:
+			tagArray = append(tagArray, map[string]int{key: int(v)})
+		}
+	}
+	if err != nil {
+		util.SendServerErrorResponse(res, err.Error())
+	}
+	util.SendSuccessReponse(res, tagArray)
 }
