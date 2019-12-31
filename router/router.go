@@ -10,6 +10,7 @@ import (
 //SetupRouter creates app route definitions
 func SetupRouter() *mux.Router {
 	MasterRouter := mux.NewRouter()
+	MasterRouter.Use(middlewares.CORSMiddleware)
 	MasterRouter.Use(middlewares.LoggerMiddleware)
 	MasterRouter.Use(middlewares.JSONContentMiddleware)
 	MasterRouter.HandleFunc("/user", controllers.CreateUser).Methods("POST")
@@ -23,7 +24,7 @@ func SetupRouter() *mux.Router {
 
 	MasterRouter.
 		HandleFunc("/articles", controllers.GetArticles).
-		Methods("GET").
+		Methods("GET", "OPTIONS").
 		Queries("page", "{page}", "size", "{size}", "query", "{query}")
 
 	MasterRouter.HandleFunc("/tags", controllers.GetTags).Methods("GET")
