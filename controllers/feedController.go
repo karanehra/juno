@@ -5,6 +5,7 @@ import (
 	"juno/util"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -20,7 +21,13 @@ func GetFeeds(res http.ResponseWriter, req *http.Request) {
 
 //GetFeedByID handles the singular feed getter route
 func GetFeedByID(res http.ResponseWriter, req *http.Request) {
-	util.SendSuccessReponse(res, "")
+	feedID := mux.Vars(req)["feedID"]
+	data, err := database.FindInCollectionByID("feeds", feedID)
+	if err != nil {
+		util.SendServerErrorResponse(res, "An error occured while querying")
+		return
+	}
+	util.SendSuccessReponse(res, data)
 }
 
 //UpdateFeedByID handles the singular feed updater route

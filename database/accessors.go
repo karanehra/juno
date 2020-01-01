@@ -27,6 +27,21 @@ func FindInCollectionByFilter(collection string, filter primitive.D) ([]bson.M, 
 	return results, nil
 }
 
+//FindInCollectionByID finds a document in collection with the given ID
+func FindInCollectionByID(collection string, ID string) (bson.D, error) {
+	coll := DB.Collection(collection)
+	result := coll.FindOne(context.TODO(), bson.M{"_id": ID})
+	if result.Err() != nil {
+		return nil, result.Err()
+	}
+	doc := bson.D{}
+	err := result.Decode(doc)
+	if err != nil {
+		return nil, err
+	}
+	return doc, nil
+}
+
 //GetPaginatedArticles is used to paginate article results
 func GetPaginatedArticles(pageSize int32, pageNo int64, query string) ([]bson.M, error) {
 	coll := DB.Collection("articles")
