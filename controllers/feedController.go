@@ -2,12 +2,21 @@ package controllers
 
 import (
 	"juno/database"
+	"juno/generics"
+	"juno/interfaces"
+	"juno/models"
 	"juno/util"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 )
+
+//CreateFeed handles the feed post endpoint
+func CreateFeed(res http.ResponseWriter, req *http.Request) {
+	var feed interfaces.Model = &models.Feed{}
+	generics.CreateMethodGenericHandler(feed, res, req)
+}
 
 //GetFeeds handles the feed getter route
 func GetFeeds(res http.ResponseWriter, req *http.Request) {
