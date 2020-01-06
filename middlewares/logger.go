@@ -25,7 +25,7 @@ func JSONContentMiddleware(next http.Handler) http.Handler {
 func CORSMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		res.Header().Set("Access-Control-Allow-Origin", "*")
-		res.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT")
+		res.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PUT")
 		res.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type")
 		next.ServeHTTP(res, req)
 	})
