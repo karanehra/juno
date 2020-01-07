@@ -1,7 +1,12 @@
 package controllers
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"juno/generics"
 	"juno/interfaces"
 	"juno/models"
@@ -36,4 +41,19 @@ func AuthenticateUser(res http.ResponseWriter, req *http.Request) {
 	}
 	user.Password = ""
 	util.SendSuccessReponse(res, user)
+}
+
+//TestController used for testing and hacking
+func TestController(res http.ResponseWriter, req *http.Request) {
+	randomizer := rand.Reader
+	key, err := rsa.GenerateKey(randomizer, 1024)
+	if err != nil {
+		util.SendServerErrorResponse(res, err.Error())
+		return
+	}
+	str := x509.MarshalPKCS1PublicKey(&key.PublicKey)
+	secretMessage := []byte("abcdefghijklmnopqrstuvwxyz")
+	encMessage, _ := rsa.EncryptPKCS1v15(randomizer, &key.PublicKey, secretMessage)
+	fmt.Println(hex.EncodeToString(encMessage))
+	util.SendSuccessReponse(res, map[string]string{"publicKey": hex.EncodeToString(str), "l": string(len(str))})
 }

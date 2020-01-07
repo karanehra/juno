@@ -13,6 +13,7 @@ func SetupRouter() *mux.Router {
 	MasterRouter.Use(middlewares.CORSMiddleware)
 	MasterRouter.Use(middlewares.LoggerMiddleware)
 	MasterRouter.Use(middlewares.JSONContentMiddleware)
+	MasterRouter.HandleFunc("/test", controllers.TestController).Methods("GET")
 	MasterRouter.HandleFunc("/user", controllers.CreateUser).Methods("POST")
 	MasterRouter.HandleFunc("/user/login", controllers.AuthenticateUser).Methods("POST")
 	MasterRouter.HandleFunc("/boards", controllers.CreateBoard).Methods("POST")
