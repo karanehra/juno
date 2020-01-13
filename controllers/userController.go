@@ -2,11 +2,14 @@ package controllers
 
 import (
 	"encoding/json"
+	"juno/database"
 	"juno/generics"
 	"juno/interfaces"
 	"juno/models"
 	"juno/util"
 	"net/http"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 //CreateUser handles the user creation endpoint
@@ -40,6 +43,6 @@ func AuthenticateUser(res http.ResponseWriter, req *http.Request) {
 
 //TestController used for testing and hacking
 func TestController(res http.ResponseWriter, req *http.Request) {
-	util.GenerateRsaKeyPair()
-	util.SendSuccessReponse(res, map[string]string{"publicKey": "hello"})
+	results, _ := database.FindInCollectionByFilter("users", bson.D{})
+	util.SendSuccessReponse(res, results)
 }
