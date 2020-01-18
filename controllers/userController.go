@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"juno/database"
 	"juno/generics"
-	"juno/interfaces"
 	"juno/models"
 	"juno/util"
 	"net/http"
@@ -14,7 +13,23 @@ import (
 
 //CreateUser handles the user creation endpoint
 func CreateUser(res http.ResponseWriter, req *http.Request) {
-	var user interfaces.Model = &models.User{}
+	var user *models.User = &models.User{}
+	if req.Body == nil {
+		util.SendBadRequestResponse(res, map[string]interface{}{"errors": "Invalid Request"})
+		return
+	}
+	json.NewDecoder(req.Body).Decode(user)
+	email := user.Email
+	filter := util.CreateKeyValueFilter("email", email)
+	users, err := database.FindInCollectionByFilter("users", filter)
+	if err != nil {
+		util.SendServerErrorResponse(res, err.Error())
+		return
+	}
+	if len(users) > 1 {
+		util.SendBadRequestResponse(res, map[string]interface{}{"errors": "Email ID is already in user"})
+		return
+	}
 	generics.CreateMethodGenericHandler(user, res, req)
 }
 
