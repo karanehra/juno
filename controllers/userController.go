@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"juno/database"
 	"juno/generics"
 	"juno/models"
@@ -53,7 +54,13 @@ func AuthenticateUser(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	user.Password = ""
-	util.SendSuccessReponse(res, user)
+	token, err := util.CreateJWTForIssuer(user.Email)
+	fmt.Println(err)
+	payload := map[string]interface{}{
+		"user":  user,
+		"token": token,
+	}
+	util.SendSuccessReponse(res, payload)
 }
 
 //TestController used for testing and hacking
