@@ -12,9 +12,14 @@ func CreateMethodGenericHandler(
 	model interfaces.Model,
 	res http.ResponseWriter,
 	req *http.Request) {
+	if req.Body == nil {
+		util.SendBadRequestResponse(res, map[string]interface{}{"errors": "Invalid Request"})
+		return
+	}
 	json.NewDecoder(req.Body).Decode(model)
 	if err := model.Validate(); len(err) > 0 {
-		util.SendBadRequestResponse(res, err)
+		responseBody := map[string]interface{}{"validationErrors": err}
+		util.SendBadRequestResponse(res, responseBody)
 		return
 	}
 	model.CreateAndSendResponse(res)
