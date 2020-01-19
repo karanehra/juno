@@ -2,14 +2,17 @@ package util
 
 import (
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
 //CreateJWTForIssuer signs and returs a JWT for the issuer
 func CreateJWTForIssuer(issuer string) (string, error) {
+	jwtTimeout, _ := strconv.Atoi(os.Getenv("JWT_VALIDITY_SECONDS"))
 	claims := jwt.StandardClaims{
-		ExpiresAt: 15000,
+		ExpiresAt: time.Now().Unix() + int64(jwtTimeout),
 		Issuer:    issuer,
 	}
 	newJwt := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
