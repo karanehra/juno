@@ -10,9 +10,10 @@ import (
 //SetupRouter creates app route definitions
 func SetupRouter() *mux.Router {
 	MasterRouter := mux.NewRouter()
+	MasterRouter.Use(middlewares.CORSMiddleware)
 	MasterRouter.Use(middlewares.JSONContentMiddleware)
 	MasterRouter.Use(middlewares.LoggerMiddleware)
-	MasterRouter.Use(middlewares.CORSMiddleware)
+	MasterRouter.Use(middlewares.AuthMiddleware)
 	MasterRouter.HandleFunc("/test", controllers.TestController).Methods("GET")
 	MasterRouter.HandleFunc("/user", controllers.CreateUser).Methods("OPTIONS", "POST")
 	MasterRouter.HandleFunc("/user/login", controllers.AuthenticateUser).Methods("OPTIONS", "POST")
@@ -32,7 +33,7 @@ func SetupRouter() *mux.Router {
 
 	MasterRouter.HandleFunc("/articles", controllers.PurgeArticles).Methods("DELETE")
 
-	MasterRouter.HandleFunc("/feeds", controllers.GetFeeds).Methods("GET")
+	MasterRouter.HandleFunc("/feeds", controllers.GetFeeds).Methods("OPTIONS", "GET")
 	MasterRouter.HandleFunc("/feeds", controllers.CreateFeed).Methods("POST")
 	MasterRouter.HandleFunc("/feeds", controllers.PurgeFeeds).Methods("OPTIONS", "DELETE")
 	MasterRouter.HandleFunc("/feeds/{feedID}", controllers.GetFeedByID).Methods("GET")
