@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"juno/database"
 	"juno/generics"
 	"juno/interfaces"
@@ -42,7 +44,15 @@ func GetFeedByID(res http.ResponseWriter, req *http.Request) {
 
 //UpdateFeedByID handles the singular feed updater route
 func UpdateFeedByID(res http.ResponseWriter, req *http.Request) {
-	util.SendSuccessReponse(res, "")
+	feedID := mux.Vars(req)["feedID"]
+	coll := database.DB.Collection("feeds")
+	var feed *models.Feed = &models.Feed{}
+	fmt.Println(feedID)
+	json.NewDecoder(req.Body).Decode(feed)
+	data, err := coll.UpdateOne(context.TODO(), util.CreateKeyValueFilter("_id", feedID), feed)
+	fmt.Println(err)
+	fmt.Println(data)
+	util.SendSuccessReponse(res, data)
 }
 
 //PurgeFeeds handles the delete all feeds route
