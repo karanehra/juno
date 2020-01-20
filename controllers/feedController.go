@@ -3,7 +3,6 @@ package controllers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"juno/database"
 	"juno/generics"
 	"juno/interfaces"
@@ -13,6 +12,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 //CreateFeed handles the feed post endpoint
@@ -44,14 +44,16 @@ func GetFeedByID(res http.ResponseWriter, req *http.Request) {
 
 //UpdateFeedByID handles the singular feed updater route
 func UpdateFeedByID(res http.ResponseWriter, req *http.Request) {
-	feedID := mux.Vars(req)["feedID"]
+	feedID, _ := primitive.ObjectIDFromHex(mux.Vars(req)["feedID"])
 	coll := database.DB.Collection("feeds")
 	var feed *models.Feed = &models.Feed{}
-	fmt.Println(feedID)
 	json.NewDecoder(req.Body).Decode(feed)
-	data, err := coll.UpdateOne(context.TODO(), util.CreateKeyValueFilter("_id", feedID), feed)
-	fmt.Println(err)
-	fmt.Println(data)
+	update := bson.M{"$set": bson.M{"tags": feed.Tags}}
+	data, err := coll.UpdateOne(context.TODO(), bson.M{"_id": feedID}, update)
+	if err != nil {
+		util.SendServerErrorResponse(res, err.Error())
+		return
+	}
 	util.SendSuccessReponse(res, data)
 }
 

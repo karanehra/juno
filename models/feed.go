@@ -11,8 +11,9 @@ import (
 
 //Feed defines the model for a feed
 type Feed struct {
-	URL   string `json:"URL"`
-	Title string `json:"title"`
+	URL   string   `json:"url"`
+	Title string   `json:"title"`
+	Tags  []string `json:"tags"`
 }
 
 func (feed *Feed) Validate() []string {
