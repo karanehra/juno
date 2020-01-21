@@ -11,7 +11,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		uri := r.RequestURI
 		if !strings.Contains(uri, "user") {
-			token := strings.Split(r.Header.Get("Authorization"), " ")[1]
+			header := r.Header.Get("Authorization")
+			if header == "" {
+				util.SendUnauthorizedResponse(w, "Auth not provided")
+				return
+			}
+			token := strings.Split(header, " ")[1]
 			if !util.IsJWTValid(token) {
 				util.SendUnauthorizedResponse(w, "Invalid JWT")
 				return
