@@ -6,13 +6,9 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-)
 
-//Process defines a task to be sent to a processor
-type Process struct {
-	Name   string `json:"processName"`
-	Status string `json:"status"`
-}
+	"github.com/karanehra/schemas"
+)
 
 //GetAllProcesses fetches all processes from the database
 func GetAllProcesses() ([]bson.M, error) {
@@ -28,7 +24,7 @@ func GetAllProcesses() ([]bson.M, error) {
 }
 
 //CreateProcess adds a process to db
-func CreateProcess(process Process) (*mongo.InsertOneResult, error) {
+func CreateProcess(process schemas.Process) (*mongo.InsertOneResult, error) {
 	coll := database.DB.Collection("process")
 	return coll.InsertOne(context.TODO(), process)
 }

@@ -5,6 +5,8 @@ import (
 	"juno/models"
 	"juno/util"
 	"net/http"
+
+	"github.com/karanehra/schemas"
 )
 
 //GetProcessesHandler handles the process listing endpoint
@@ -19,7 +21,7 @@ func GetProcessesHandler(res http.ResponseWriter, req *http.Request) {
 
 //CreateProcessHandler handlers the process creation endpoint
 func CreateProcessHandler(res http.ResponseWriter, req *http.Request) {
-	var process *models.Process = &models.Process{Status: "CREATED"}
+	var process *schemas.Process = &schemas.Process{Status: "CREATED"}
 	json.NewDecoder(req.Body).Decode(process)
 	data, err := models.CreateProcess(*process)
 	if err != nil {
