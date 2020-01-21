@@ -38,5 +38,8 @@ func SetupRouter() *mux.Router {
 	MasterRouter.HandleFunc("/feeds", controllers.CreateFeed).Methods("OPTIONS", "POST")
 	MasterRouter.HandleFunc("/feeds", controllers.PurgeFeeds).Methods("OPTIONS", "DELETE")
 	MasterRouter.HandleFunc("/feeds/{feedID}", controllers.GetFeedByID).Methods("GET")
+
+	MasterRouter.HandleFunc("/process", controllers.GetProcessesHandler).Methods("GET")
+	MasterRouter.HandleFunc("/process", controllers.CreateProcessHandler).Methods("OPTIONS", "POST")
 	return MasterRouter
 }
