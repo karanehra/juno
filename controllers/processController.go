@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"juno/models"
+	"juno/database"
 	"juno/util"
 	"net/http"
 
@@ -11,7 +11,7 @@ import (
 
 //GetProcessesHandler handles the process listing endpoint
 func GetProcessesHandler(res http.ResponseWriter, req *http.Request) {
-	data, err := models.GetAllProcesses()
+	data, err := schemas.GetAllProcesses(database.DB)
 	if err != nil {
 		util.SendServerErrorResponse(res, err.Error())
 		return
@@ -23,7 +23,7 @@ func GetProcessesHandler(res http.ResponseWriter, req *http.Request) {
 func CreateProcessHandler(res http.ResponseWriter, req *http.Request) {
 	var process *schemas.Process = &schemas.Process{Status: "CREATED"}
 	json.NewDecoder(req.Body).Decode(process)
-	data, err := models.CreateProcess(*process)
+	data, err := schemas.CreateProcess(database.DB, *process)
 	if err != nil {
 		util.SendServerErrorResponse(res, err.Error())
 		return
