@@ -63,3 +63,8 @@ func GetPaginatedArticles(pageSize int32, pageNo int64, query string) ([]bson.M,
 	}
 	return results, nil
 }
+
+//GetCollectionDocumentCount returns a doc count in given collection
+func GetCollectionDocumentCount(collection string) (int64, error) {
+	return DB.Collection(collection).CountDocuments(context.Background(), bson.M{})
+}

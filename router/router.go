@@ -41,5 +41,7 @@ func SetupRouter() *mux.Router {
 
 	MasterRouter.HandleFunc("/process", controllers.GetProcessesHandler).Methods("GET")
 	MasterRouter.HandleFunc("/process", controllers.CreateProcessHandler).Methods("OPTIONS", "POST")
+
+	MasterRouter.HandleFunc("/dataset", controllers.GetDataset).Methods("GET")
 	return MasterRouter
 }
