@@ -19,9 +19,11 @@ func GetDataset(res http.ResponseWriter, req *http.Request) {
 		util.SendServerErrorResponse(res, feedErr.Error())
 		return
 	}
+
 	payload := map[string]interface{}{
 		"feedCount":    feedCount,
 		"articleCount": articleCount,
 	}
+
 	util.SendSuccessReponse(res, payload)
 }
